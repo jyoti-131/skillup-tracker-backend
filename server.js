@@ -9,10 +9,16 @@ const Joi = require("joi");
 dotenv.config();
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001; // Use process.env.PORT for deployment
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://skilluptracker.netlify.app", // Your Netlify frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Connect to MongoDB
@@ -157,7 +163,6 @@ app.delete("/skills/:id", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Failed to delete skill" });
   }
 });
-
 
 // Default Error Handling Middleware
 app.use((err, req, res, next) => {
